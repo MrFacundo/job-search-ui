@@ -10,8 +10,12 @@ export default function Job({job}) {
 
     const {attributes} = job;
 
+    const qualifications = attributes.qualifications.map((qualification) =>
+        <li key={qualification.title}>{qualification.title}</li> 
+    );
+
     return (
-        <Card className="mb-3 bg-light">
+        <Card className="mb-3 bg-light shadow-sm mb-5 bg-white rounded">
             <Card.Body>
                 <div className="d-flex justify-content-between">
                     <div>
@@ -19,36 +23,45 @@ export default function Job({job}) {
                             {attributes.title} - <span
                             className="text-muted font-weight-light">{attributes.company.name}</span>
                         </Card.Title>
-                        <Card.Subtitle className="text-muted mb-2">
-                            {new Date(attributes.publications[0].createTime).toLocaleDateString()}
-                        </Card.Subtitle>
-                        <Card.Subtitle>
-                            {attributes.location.city}
-                        </Card.Subtitle>
-                        {attributes.workingTimes[0] && attributes.workingTimes[0].title &&
+                        <div>
+                            <Card.Subtitle className="text-muted mb-2">
+                                {/* {new Date(attributes.publications[0].createTime).toLocaleDateString('de-DE')} */}
+                                {Math.floor((new Date(Date.now()) - new Date(attributes.publications[0].publicationTime)) / (1000 * 3600 * 24))} days ago
+
+                            </Card.Subtitle>
+                            {attributes.location.city && 
+                            <Card.Subtitle>
+                                {attributes.location.city}
+                            </Card.Subtitle>}
+                        </div>
+                        {attributes.workingTimes[0] &&
                         <Badge variant="secondary" className="mr-2">{attributes.workingTimes[0].title}</Badge>}
 
                         {attributes.employmentTypes[0] && attributes.employmentTypes[0].title &&
-                        <Badge variant="secondary"
-                               className="mr-2">{attributes.employmentTypes[0].title}</Badge>}
+                        <Badge variant="info"
+                               className="mr-2 mb-2">{attributes.employmentTypes[0].title}</Badge>}
                     </div>
                     {attributes.company && attributes.company.name &&
-                    <img className="d-none d-md-block" height="50" alt={attributes.company.name}
+                    <img className="d-none d-md-block" alt={attributes.company.name}
                          src={attributes.company.logo}/>}
+                         
                 </div>
-                <p> ...</p>
-                <Card.Text>
+                <Card.Text className="mb-0 text-center">
                     <Button
-                        className="viewDetails"
+                        className="mt-4"
                         onClick={() => setOpen(prevOpen => !prevOpen)}
-                        variant="outline-secondary"
+                        variant="outline-success"
                     >
                         {open ? 'Hide Details' : 'View Details'}
                     </Button>
                 </Card.Text>
                 <Collapse in={open}>
                     <div className="mt-4">
-                        <Card.Text className="m-2">{attributes.previewText}</Card.Text>
+                        <Card.Text className="m-2"><strong>Responsibilities: </strong>{attributes.previewText}</Card.Text>
+                        {attributes.requirements && 
+                        <Card.Text className="m-2"><strong>Requirements: </strong>{attributes.requirements}</Card.Text>}
+                        {attributes.qualifications.length > 0 && 
+                        <Card.Text className="m-2"><strong>Qualifications: </strong>{qualifications}</Card.Text>}
                     </div>
                 </Collapse>
             </Card.Body>
