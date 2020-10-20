@@ -16,9 +16,9 @@ const BASE_URL = 'https://api.joblocal.de/v4/search-jobs'
 function reducer(state, action) {
     switch (action.type) {
         case ACTIONS.MAKE_REQUEST:
-            return {loading: true, jobs: []}
+            return {loading: true, jobs: [], pagination: {}}
         case ACTIONS.GET_DATA:
-            return {...state, loading: false, jobs: action.payload.jobs}
+            return {...state, loading: false, jobs: action.payload.jobs, pagination: action.payload.pagination}
         case ACTIONS.ERROR:
             return {...state, loading: false, error: action.payload.error, jobs: []}
         default:
@@ -26,26 +26,26 @@ function reducer(state, action) {
     }
 }
 
-export default function useFetchJobs(query) {
-    const [state, dispatch] = useReducer(reducer, {jobs: [], loading: true})
+export default function useFetchJobs(query, page) {
+    const [state, dispatch] = useReducer(reducer, {jobs: [], pagination: {}, loading: true})
 
     useEffect(() => {
         dispatch({type: ACTIONS.MAKE_REQUEST})
         axios.get(BASE_URL, {
             params: {
-                'search.query': query
+                'search.query': query,
+                'page.number': page,
             }
         })
             .then(res => {
                 // handle success
-                dispatch({type: ACTIONS.GET_DATA, payload: {jobs: res.data.included}})
+                dispatch({type: ACTIONS.GET_DATA, payload: {jobs: res.data.included, pagination: res.data.meta.pagination} })
             })
             .catch(function (error) {
                 // handle error
                 dispatch({type: ACTIONS.ERROR, payload: {error: error}})
-                console.log(error);
             });
-    }, [query])
+    }, [query, page])
 
     return state
 }

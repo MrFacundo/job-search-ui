@@ -12,19 +12,22 @@ code {
     monospace;
 }
 
-/* .card-text {
+img {
   height: 50px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-} */
-
-.btn-outline-primary {
-  /* position: absolute;
-  bottom: 15px; */
-  color: #316bb8;
-  border-color: #316bb8;
+  max-width: 150px;
 }
 
-.btn-outline-primary :hover {
+.pagination {
+  justify-content: center;
+  margin: 2rem 0 2rem;
+  color: black;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #f7a800;
+  border-color: #f7a800;
+}
+
+.btn-success {
+  background-color: #f7a800;
 }
